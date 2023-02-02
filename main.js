@@ -1,12 +1,13 @@
-
+// eslint //
+// variables wherein the basic structure for the game is found //
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 let x = canvas.width / 2;
 let y = canvas.height - 30;
 let dx = 2;
 let dy = -2;
-let color = "#0095DD"
-let ballRadius = 10
+let color = "#0095DD";
+let ballRadius = 10;
 const paddleHeight = 10;
 const paddleWidth = 75;
 let paddleX = (canvas.width - paddleWidth) / 2;
@@ -22,8 +23,10 @@ const brickOffsetTop = 30;
 const brickOffsetLeft = 30;
 let score = 0;
 let lives = 3;
-initializeBricks(); 
+//pls uncomment//
+//initializeBricks(); //
 
+// 
 class Ball {
     constructor(x = 0, y = 0, dx = 2, dy = -2, radius = 20, color = 'blue') {
         this.x = x;
@@ -53,26 +56,31 @@ class Brick {
     render() { 
         ctx.beginPath();
         ctx.rect(this.x, this.y, this.width, this.height);
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();s
+        ctx.fillStyle = "#FFC5CD";
+        ctx.fill();
         ctx.closePath();
     }
 }
 
 class Bricks { 
-    constructor(rows, cols) {
+    constructor(rows, cols, width, height, padding, offsetLeft, offsetTop) {
         this.bricks = []
-        this.rows = rows 
-        this.cols = cols 
-        this.init(); 
+        this.rows = rows;
+        this.cols = cols;
+        this.width = width; 
+        this.height = height; 
+        this.brickPadding = padding; 
+        this.brickOffsetLeft = offsetLeft; 
+        this.brickOffsetTop = offsetTop;
+        this.init();
 }
     init() {
-        for (let c =  0; c < brickColumnCount; c+=1){ 
+        for (let c =  0; c < this.cols; c+=1){ 
             this.bricks[c] = []; 
-            for (let r = 0; r <brickRowCount; r+=1){
-                const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
-                const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
-                this.bricks[c][r] = new Brick(brickX, brickY, brickWidth, brickHeight);
+            for (let r = 0; r <this.rows; r+=1){
+                const brickX = c * (this.width + this.brickPadding) + this.brickOffsetLeft;
+                const brickY = r * (this.height + this.brickPadding) + this.brickOffsetTop;
+                this.bricks[c][r] = new Brick(brickX, brickY, this.width, this.height);
             }
         }
     }
@@ -80,7 +88,7 @@ class Bricks {
         for (let c = 0; c < this.cols; c++) {
             for (let r = 0; r < this.rows; r++) {
                 const brick = this.bricks[c][r];
-                if (bricks[c][r].status === 1) {
+                if (brick.status === 1) {
                     brick.render(ctx);
                 }
             }
@@ -122,7 +130,8 @@ class Score {
 }
 
 class Lives { 
-    constructor(x, y, color = "#0955DD", font = "16px Comic Sans") { 
+    constructor(text, x, y, color = "#0955DD", font = "16px Comic Sans") { 
+        this.text = text;
         this.x = x; 
         this.y = y; 
         this.color = color; 
@@ -136,11 +145,14 @@ class Lives {
     }
 }
 
-let ball = new Ball();
-const bricks = new Bricks(brickColumnCount, brickRowCount)
-const paddle = new Paddle(paddleX, paddleY);
+// instantiations are found here //
+let ball = new Ball(x/2, y -55, dx, dy, ballRadius, "#0955DD");
+const bricks = new Bricks(3, 5, 75, 20, 10, 30, 30);
+bricks.init();
+const paddle = new Paddle(paddleX, paddleY, 75, 10);
 const scoreLabel = new Score('Score: ', 8, 20);
 const livesLabel = new Lives('Lives: ', 65, 20);
+livesLabel.hearts = 3;
 
 const brick = [];
 for (let c = 0; c < brickColumnCount; c++) {
@@ -157,8 +169,8 @@ function initializeBricks() {
         const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
         const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
             bricks[c][r] = new Brick(brickX, brickY, brickWidth, brickHeight);
+        }
     }
-}
 
 }
 
@@ -167,37 +179,39 @@ function draw() {
     bricks.render(ctx);
     ball.render(ctx);
     paddle.render(ctx); 
-    drawScore();
-    drawLives();
+    scoreLabel.render(ctx);
+    livesLabel.render(ctx);
     collisionDetection();
-    x += dx;
-    y += dy;
-    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    dx = -dx;
+    ball.x += ball.dx;
+    ball.y += ball.dy;
+    if (ball.x + ball.dx > canvas.width - ballRadius || ball.x + ball.dx < ballRadius) {
+    ball.dx = -ball.dx; 
   }
-  if (y + dy < ballRadius) {
-    dy = -dy;
-  } else if (y + dy > canvas.height - ballRadius) {
-    if (x > paddleX && x < paddleX + paddleWidth) {
-      dy = -dy;
+  if (ball.y + ball.dy < ballRadius) {
+    ball.dy = -ball.dy;
+  } else if (ball.y + ball.dy > canvas.height - ballRadius) {
+    if (ball.x > paddle.x && ball.x < paddle.x + paddleWidth) {
+       ball.dy = -ball.dy;
     } else {
-        lives--;
-        if (!lives) {
+        livesLabel.hearts -= 1;
+        if (livesLabel.hearts < 1) {
             alert("GAME OVER");
             document.location.reload();
+            this.ball.x = 200;
+            this.ball.y = 200;
         } else {
-            x = canvas.width / 2;
-            y = canvas.height - 30;
-            dx = 2;
-            dy = -2;
-            paddleX = (canvas.width - paddleWidth) / 2;
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height - 30;
+            ball.dx = 2;
+            ball.dy = -2;
+            paddle.x = (canvas.width - paddleWidth) / 2;
         }
     }
   }       
     if (rightPressed) {
-    paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
+        paddle.x+= dx;
     } else if (leftPressed) {
-    paddleX = Math.max(paddleX - 7, 0);
+    paddle.x+= dy;
   }
   requestAnimationFrame(draw);
 }
@@ -226,24 +240,26 @@ rightPressed = false;
 } else if (e.key === "Left" || e.key === "ArrowLeft") {
 leftPressed = false;
 }
+
 }
 function collisionDetection() {
-for (let c = 0; c < bricks.cols; c++) {
-for (let r = 0; r < bricks.rows; r++) {
-const b = bricks.bricks[c][r];
-if (b.status === 1) {
-    if (
-    x > b.x &&
-    x < b.x + brickWidth &&
-    y > b.y &&
-    y < b.y + brickHeight
+    for (let c = 0; c < bricks.cols; c++) {
+        for (let r = 0; r < bricks.rows; r++) {
+            const b = bricks.bricks[c][r];
+            if (b.status === 1) {
+                if (
+                ball.x > b.x &&
+                ball.x < b.x + brickWidth &&
+                ball.y > b.y &&
+                ball.y < b.y + brickHeight
 ) {
-  dy = -dy;
-  b.status = 0;
-  score++;
-  if (score === brickRowCount * brickColumnCount) {
-    alert("YOU WIN, CONGRATULATIONS!");
-    document.location.reload();
+                console.log(bricks.bricks)
+                ball.dy = -ball.dy;
+                b.status = 0;
+                scoreLabel.points += 1; 
+                if (score === bricks.cols * bricks.rows) {
+                    alert("YOU WIN, CONGRATULATIONS!");
+                    document.location.reload();
   }
 }
 }
