@@ -1,3 +1,5 @@
+import Sprite from './Sprite'
+
 class Ball extends Sprite {
     x: number
     y: number
@@ -23,3 +25,5 @@ class Ball extends Sprite {
         ctx.closePath();
     }
 } 
+
+export default Ball

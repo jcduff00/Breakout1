@@ -1,3 +1,5 @@
+import Sprite from './Sprite'
+
 class Lives extends Sprite { 
     text: string
     x: number
@@ -17,3 +19,5 @@ class Lives extends Sprite {
         ctx.fillText(`${this.text} ${this.hearts}`, this.x, this.y);
     }
 }
+
+export default Lives

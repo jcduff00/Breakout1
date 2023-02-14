@@ -1,3 +1,5 @@
+import Sprite from './Sprite'
+
 class Score extends Sprite { 
     text: string
     x: number
@@ -18,3 +20,5 @@ class Score extends Sprite {
         ctx.fillText(`${this.text} ${this.points}`, this.x, this.y);
     }
 }
+
+export default Score

@@ -1,4 +1,6 @@
-class Bricks extends Sprite { 
+import Brick from './Brick'
+
+class Bricks { 
     rows: number
     cols: number
     width: number
@@ -11,7 +13,8 @@ class Bricks extends Sprite {
     brickOffsetLeft: number
     brickOffsetTop: number
     constructor(rows: any, cols: any, width: number, height: number, padding: any, offsetLeft: any, offsetTop: any) {
-        super(width, height);
+        this.width = width;
+        this.height = height;
         this.bricks = []
         this.rows = rows;
         this.cols = cols;
@@ -41,3 +44,5 @@ class Bricks extends Sprite {
         }
     }
 }
+
+export default Bricks

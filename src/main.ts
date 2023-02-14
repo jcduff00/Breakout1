@@ -1,6 +1,12 @@
 // eslint //
 // variables wherein the basic structure for the game is found //
 
+import Ball from './Ball'
+import Sprite from './Sprite'
+import Bricks from './Bricks'
+import Lives from './Lives'
+import Score from './Score'
+
 const canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 let x = canvas.width / 2;

@@ -1,3 +1,5 @@
+import Sprite from './Sprite'
+
 class Brick extends Sprite { 
     x: number
     y: number 
@@ -9,3 +11,5 @@ class Brick extends Sprite {
         this.status = 1; 
     }
 }
+
+export default Brick
